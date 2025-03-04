@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Código</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .light-theme {
+      background-color: white;
+      color: black;
+    }
+
+    .main-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .generator-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .container {
+      width: 100%;
+      padding: 20px;
+      padding-bottom: 70px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .history-panel {
+      width: 300px;
+      background-color: #1a1a1a;
+      padding: 20px;
+      overflow-y: auto;
+      transition: background-color 0.3s;
+    }
+
+    .light-theme .history-panel {
+      background-color: #f3f4f6;
+    }
+
+    .history-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-item {
+      background-color: #2d2d2d;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .history-item:hover {
+      transform: translateX(-5px);
+    }
+
+    .light-theme .history-item {
+      background-color: #e5e7eb;
+    }
+
+    .light-theme .history-item:hover {
+      background-color: #d1d5db;
+    }
+
+    .history-item.copied::after {
+      content: '✓';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #22c55e;
+    }
+
+    .btn {
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-green {
+      background-color: #22c55e;
+    }
+
+    .btn-green:hover {
+      background-color: #16a34a;
+    }
+
+    .btn-gray {
+      background-color: #4b5563;
+    }
+
+    .btn-gray:hover {
+      background-color: #374151;
+    }
+
+    .btn-orange {
+      background-color: #f97316;
+    }
+
+    .btn-orange:hover {
+      background-color: #ea580c;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+
+    #codigoGerado {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 15px;
+      background-color: #2d2d2d;
+      border-radius: 8px;
+      display: none;
+      min-width: 200px;
+      transition: background-color 0.3s;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .light-theme #codigoGerado {
+      background-color: #e5e7eb;
+    }
+
+    #copyMessage {
+      margin-top: 10px;
+      color: #22c55e;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 16px;
+    }
+
+    #themeToggle {
+      position: fixed;
+      top: 30px;
+      right: 340px;
+      background-color: #4b5563;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .keyboard-shortcuts {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2d2d2d;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0.8;
+      width: max-content;
+    }
+
+    .light-theme .keyboard-shortcuts {
+      background-color: #e5e7eb;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+    <div class="generator-container">
+      <div class="container">
+        <div class="button-group">
+          <button id="themeToggle">🌙 Tema Escuro</button>
+          <button class="btn btn-green" data-prefix="7G#" title="Pressione 1">Gerar Código 7G</button>
+          <button class="btn btn-gray" data-prefix="R7#" title="Pressione 2">Gerar Código R7</button>
+          <button class="btn btn-orange" data-prefix="BT#" title="Pressione 3">Gerar Código BT</button>
+        </div>
+        <div id="codigoGerado"></div>
+        <div id="copyMessage">Código copiado!</div>
+        <div class="keyboard-shortcuts">
+          Atalhos: 1, 2, 3 = Gerar Códigos | C = Copiar Último | L = Limpar Histórico
+        </div>
+      </div>
+    </div>
+    <div class="history-panel">
+      <div class="history-title">
+        Histórico
+        <button class="btn btn-gray btn-small" id="clearHistory">Limpar</button>
+      </div>
+      <div id="historyContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    let history = JSON.parse(localStorage.getItem('codeHistory') || '[]');
+    let lastGeneratedCode = '';
+
+    function saveHistory() {
+      localStorage.setItem('codeHistory', JSON.stringify(history));
+    }
+
+    function addToHistory(code) {
+      const time = new Date().toLocaleTimeString();
+      history.unshift({ code, time });
+      if (history.length > 10) history.pop();
+      updateHistoryDisplay();
+      saveHistory();
+      lastGeneratedCode = code;
+    }
+
+    function updateHistoryDisplay() {
+      const container = document.getElementById('historyContainer');
+      container.innerHTML = history
+        .map(item => `
+                    <div class="history-item" data-code="${item.code}">
+                        <div>${item.code}</div>
+                        <div class="timestamp">${item.time}</div>
+                    </div>
+                `).join('');
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const msg = document.getElementById('copyMessage');
+        msg.style.opacity = '1';
+        setTimeout(() => msg.style.opacity = '0', 2000);
+      });
+    }
+
+    function generateCode(prefix) {
+      const codigo = `${prefix}${Math.floor(10000 + Math.random() * 90000)}`;
+      const codigoElement = document.getElementById('codigoGerado');
+      codigoElement.style.display = 'inline-block';
+      codigoElement.textContent = codigo;
+      addToHistory(codigo);
+      copyToClipboard(codigo);
+    }
+
+    document.querySelectorAll('.btn').forEach(button => {
+      button.addEventListener('click', () => {
+        if (button.dataset.prefix) {
+          generateCode(button.dataset.prefix);
+        }
+      });
+    });
+
+    document.getElementById('clearHistory').addEventListener('click', () => {
+      history = [];
+      updateHistoryDisplay();
+      saveHistory();
+      document.getElementById('codigoGerado').style.display = 'none';
+      lastGeneratedCode = '';
+    });
+
+    document.getElementById('historyContainer').addEventListener('click', (e) => {
+      const historyItem = e.target.closest('.history-item');
+      if (historyItem) {
+        const code = historyItem.dataset.code;
+        copyToClipboard(code);
+
+        const codigoElement = document.getElementById('codigoGerado');
+        codigoElement.style.display = 'inline-block';
+        codigoElement.textContent = code;
+        lastGeneratedCode = code;
+
+        const items = document.querySelectorAll('.history-item');
+        items.forEach(item => item.classList.remove('copied'));
+        historyItem.classList.add('copied');
+        setTimeout(() => historyItem.classList.remove('copied'), 2000);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '1') generateCode('7G#');
+      if (e.key === '2') generateCode('R7#');
+      if (e.key === '3') generateCode('BT#');
+      if (e.key.toLowerCase() === 'c' && lastGeneratedCode) copyToClipboard(lastGeneratedCode);
+      if (e.key.toLowerCase() === 'l') document.getElementById('clearHistory').click();
+    });
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const body = document.body;
+      const isDark = body.classList.toggle('light-theme');
+      document.getElementById('themeToggle').textContent = isDark ? '☀️ Tema Claro' : '🌙 Tema Escuro';
+    });
+
+    updateHistoryDisplay();
+
+    if (history.length > 0) {
+      const codigoElement = document.getElementById('codigoGerado');
+      codigoElement.style.display = 'inline-block';
+      codigoElement.textContent = history[0].code;
+      lastGeneratedCode = history[0].code;
+    }
+  </script>
+</body>
+
+</html>
