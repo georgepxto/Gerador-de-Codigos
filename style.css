@@ -9,7 +9,7 @@ body {
   color: white;
   font-family: Arial, sans-serif;
   min-height: 100vh;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.33s, color 0.33s;
 }
 
 .light-theme {
@@ -17,7 +17,6 @@ body {
   color: black;
 }
 
-/* Layout principal responsivo */
 .main-container {
   display: flex;
   flex-direction: row;
@@ -41,7 +40,6 @@ body {
   padding-bottom: 70px;
 }
 
-/* Grupo de botões responsivo */
 .button-group {
   display: flex;
   gap: 15px;
@@ -50,7 +48,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Painel de histórico */
 .history-panel {
   width: 300px;
   background-color: #1a1a1a;
@@ -106,7 +103,6 @@ body {
   color: #22c55e;
 }
 
-/* Botões estilizados */
 .btn {
   border: none;
   padding: 12px 24px;
@@ -150,7 +146,6 @@ body {
   font-size: 14px;
 }
 
-/* Área de código gerado */
 #codigoGerado {
   margin-top: 20px;
   font-size: 24px;
@@ -178,7 +173,6 @@ body {
   font-size: 16px;
 }
 
-/* Botão de alternância de tema */
 #themeToggle {
   position: absolute;
   top: 20px;
@@ -233,7 +227,6 @@ body {
   }
 }
 
-/* Media queries para responsividade */
 @media (max-width: 900px) {
   #themeToggle {
     position: static;
