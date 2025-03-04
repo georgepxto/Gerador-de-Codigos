@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style.css">
+  <title>Gerador de Códigos</title>
+
+
+</head>
+
+<body>
+  <div class="main-container">
+    <div class="generator-container">
+      <div class="container">
+        <div class="button-group">
+          <button id="themeToggle">🌙 Tema Escuro</button>
+          <button class="btn btn-green" data-prefix="7G#" title="Pressione 1">Gerar Código 7G</button>
+          <button class="btn btn-gray" data-prefix="R7#" title="Pressione 2">Gerar Código R7</button>
+          <button class="btn btn-orange" data-prefix="BT#" title="Pressione 3">Gerar Código BT</button>
+        </div>
+        <div id="codigoGerado"></div>
+        <div id="copyMessage">Código copiado!</div>
+        <div class="keyboard-shortcuts">
+          Atalhos: 1, 2, 3 = Gerar Códigos | C = Copiar Último | L = Limpar Histórico
+        </div>
+      </div>
+    </div>
+    <div class="history-panel">
+      <div class="history-title">
+        Histórico
+        <button class="btn btn-gray btn-small" id="clearHistory">Limpar</button>
+      </div>
+      <div id="historyContainer"></div>
+    </div>
+  </div>
+
+  <script src="./script.js">
+  </script>
+</body>
+
+</html>
